@@ -1,0 +1,163 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+
+model ADMIN { 
+  idADMIN             Int       @id @default(autoincrement())
+  nombre              String
+  email               String    @unique
+  password            String
+
+    reportes          REPORTE[]
+}
+
+
+
+model TEST {
+  idTEST              Int     @id @default(autoincrement())
+  descripcion         String  @db.VarChar(500)
+
+    reporte           REPORTE[]
+
+    preguntas         PREGUNTAS[]
+}
+
+
+
+model ASPIRANTE {
+  idASPIRANTE         Int     @id @default(autoincrement())
+  nombre_completo     String  @db.VarChar(50)
+  correo              String  @db.VarChar(50)
+  telefono            String  @db.VarChar(10)
+
+    reportes          REPORTE[]
+}
+
+
+
+model REPORTE {
+  idREPORTE           Int      @id @default(autoincrement())
+  Fecha               DateTime
+
+    areas             AREA[]
+
+    TEST_idTEST       Int  @unique
+    test              TEST @relation(fields: [TEST_idTEST], references: [idTEST])
+
+    aspiranteId       Int
+    aspirante         ASPIRANTE @relation(fields: [aspiranteId], references: [idASPIRANTE])
+
+    
+    adminId           Int
+    admin             ADMIN @relation(fields: [adminId], references: [idADMIN])
+}
+
+
+
+model AREA {
+  idAREA              Int      @id @default(autoincrement())
+  nombre              String @db.VarChar(50)
+  descripcion         String  @db.VarChar(500)
+
+    programas         PROGRAMA[]
+
+    reporteId         Int
+    reporte           REPORTE @relation(fields: [reporteId], references: [idREPORTE])
+}
+
+
+
+model PROGRAMA {
+  idPROGRAMA          Int      @id @default(autoincrement())
+  nombre              String @db.VarChar(50)
+  descripcion         String  @db.VarChar(500)
+
+    categoriaId       Int
+    categoria         CATEGORIA @relation(fields: [categoriaId], references: [idCATEGORIA])
+
+    ambienteId        Int     @unique
+    ambiente          AMBIENTE @relation(fields: [ambienteId], references: [idAMBIENTE])
+
+    areaId            Int
+    area              AREA   @relation(fields: [areaId], references: [idAREA])
+  
+}
+
+
+
+model CATEGORIA {
+  idCATEGORIA         Int     @id @default(autoincrement())
+  descripcion         String  @db.VarChar(500)
+  nombre              String  @db.VarChar(50)
+
+    redesid           Int
+    redes             REDES   @relation(fields: [redesid], references: [idREDES])
+
+    programas         PROGRAMA[]
+}
+
+
+
+model REDES {
+  idREDES             Int          @id @default(autoincrement())
+  descripcion         String       @db.VarChar(500)
+
+    categorias        CATEGORIA[]
+}
+
+
+
+model AMBIENTE {
+  idAMBIENTE          Int     @id @default(autoincrement())
+  descripcion         String  @db.VarChar(500)
+  caracteristicas     String @db.VarChar(500)
+
+    programa          PROGRAMA[]
+
+    centroId          Int
+    centro            CENTRO @relation(fields: [centroId], references: [idCENTRO])
+}
+
+
+
+model CENTRO {
+  idCENTRO            Int @id @default(autoincrement())
+  descripcion         String @db.VarChar(500)
+
+    ambientes         AMBIENTE[]
+}
+
+
+
+model PREGUNTAS {
+  idPREGUNTAS         Int      @id @default(autoincrement())
+  descripcion         String   @db.VarChar(500)
+
+    testId            Int
+    test              TEST    @relation(fields: [testId], references: [idTEST])
+
+    respuestas        RESPUESTAS[]
+}
+
+
+
+model RESPUESTAS {
+  idRESPUESTAS        Int      @id @default(autoincrement())
+  descripcion         String   @db.VarChar(500)
+
+    preguntaId        Int
+    pregunta          PREGUNTAS @relation(fields: [preguntaId], references: [idPREGUNTAS])
+}
