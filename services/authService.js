@@ -32,7 +32,7 @@ const authService = {
                 return null
             }
             const token = jwt.sign(
-                { id: aspirante.idASPIRANTE, email: aspirante.email },
+                { id: aspirante.idASPIRANTE, email: aspirante.email, nombre_completo: aspirante.nombre_completo},
                 "JWT_SECRET",
                 { expiresIn: "2h"}
             )
