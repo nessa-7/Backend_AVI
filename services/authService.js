@@ -21,23 +21,43 @@ const authService = {
 
     
     async login(data){
-        const {idASPIRANTE, password} = data
-        const aspirante = await prisma.aSPIRANTE.findUnique({ where: { idASPIRANTE }})
-        if (!aspirante){
-            return null
-        }
-        else{
-            const valido = await bcrypt.compare(password, aspirante.password)
+
+        const {id, pass} = data
+
+        //buscar admin
+        const admin = await prisma.aDMIN.findUnique({ where: {idADMIN: id}})
+
+        if (admin){
+
+            const valido = await bcrypt.compare(pass, admin.password)
             if (!valido){
                 return null
             }
             const token = jwt.sign(
-                { id: aspirante.idASPIRANTE, email: aspirante.email, nombre_completo: aspirante.nombre_completo},
+                { id: admin.idADMIN, rol: "admin"},
                 "JWT_SECRET",
                 { expiresIn: "2h"}
             )
-            return {aspirante, token}
+            return {user: admin, token, rol: "admin"}
         }
+
+
+        //buscar aspirante
+        const aspirante = await prisma.aSPIRANTE.findUnique({ where: { idASPIRANTE: id }})
+        if (aspirante){
+            const valido = await bcrypt.compare(pass, aspirante.password)
+            if (!valido){
+                return null
+            }
+            const token = jwt.sign(
+                { id: aspirante.idASPIRANTE, nombre_completo: aspirante.nombre_completo, rol: "aspirante"},
+                "JWT_SECRET",
+                { expiresIn: "2h"}
+            )
+            return {user: aspirante, token, rol: "aspirante"}
+        }
+
+        return null
     },
 
     logout(){

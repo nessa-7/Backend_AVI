@@ -15,7 +15,8 @@ const authController = {
             res.json({
                 mensaje: "Login exitoso",
                 token: result.token,
-                aspirante: result.aspirante
+                rol: result.rol,
+                usuario: result.user
             })
         }
     }
