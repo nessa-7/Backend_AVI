@@ -20,19 +20,68 @@ model ADMIN {
   nombre              String
   email               String    @unique
   password            String
-
-    reportes          REPORTE[]
 }
 
 
 
-model TEST {
-  idTEST              Int     @id @default(autoincrement())
+model REDES {
+  idREDES             Int          @id @default(autoincrement())
+  nombre              String       @db.VarChar(50)
+  descripcion         String       @db.VarChar(500)
+
+    programas         PROGRAMA[]
+}
+
+
+
+model CENTRO {
+  idCENTRO            Int @id @default(autoincrement())
+  descripcion         String @db.VarChar(500)
+
+    ambientes         AMBIENTE[]
+    programas         PROGRAMA[]
+}
+
+
+
+model AMBIENTE {
+  idAMBIENTE          Int     @id @default(autoincrement())
   descripcion         String  @db.VarChar(500)
+  caracteristicas     String @db.VarChar(500)
 
-    reporte           REPORTE[]
+    centroId          Int
+    centro            CENTRO @relation(fields: [centroId], references: [idCENTRO])
+}
 
-    preguntas         PREGUNTAS[]
+
+
+model PROGRAMA {
+  idPROGRAMA          Int      @id @default(autoincrement())
+  nombre              String   @db.VarChar(50)
+  descripcion         String   @db.VarChar(500)
+
+    recomendaciones   RECOMENDACION[]
+
+    redesid           Int
+    redes             REDES   @relation(fields: [redesid], references: [idREDES])
+
+    centroId          Int
+    centro            CENTRO @relation(fields: [centroId], references: [idCENTRO])
+  
+}
+
+
+
+model RECOMENDACION {
+  idRECOMENDACION     Int      @id @default(autoincrement())
+  nombre              String   @db.VarChar(50)
+  descripcion         String   @db.VarChar(500)
+
+    programaId        Int
+    programa          PROGRAMA @relation(fields: [programaId], references: [idPROGRAMA])
+
+    reporteId         Int
+    reporte           REPORTE @relation(fields: [reporteId], references: [idREPORTE])
 }
 
 
@@ -45,6 +94,18 @@ model ASPIRANTE {
   password            String 
 
     reportes          REPORTE[]
+    respuestas_Asp    RESPUESTAS_ASPIRANTE[]
+}
+
+
+
+model TEST {
+  idTEST              Int     @id @default(autoincrement())
+  descripcion         String  @db.VarChar(500)
+
+    reporte           REPORTE[]
+    preguntas         PREGUNTAS[]
+    respuestas_Asp    RESPUESTAS_ASPIRANTE[]
 }
 
 
@@ -53,92 +114,14 @@ model REPORTE {
   idREPORTE           Int      @id @default(autoincrement())
   Fecha               DateTime
 
-    areas             AREA[]
-
-    TEST_idTEST       Int  @unique
-    test              TEST @relation(fields: [TEST_idTEST], references: [idTEST])
+    testId            Int  @unique
+    test              TEST @relation(fields: [testId], references: [idTEST])
 
     aspiranteId       Int
     aspirante         ASPIRANTE @relation(fields: [aspiranteId], references: [idASPIRANTE])
 
-    
-    adminId           Int
-    admin             ADMIN @relation(fields: [adminId], references: [idADMIN])
-}
-
-
-
-model AREA {
-  idAREA              Int      @id @default(autoincrement())
-  nombre              String @db.VarChar(50)
-  descripcion         String  @db.VarChar(500)
-
-    programas         PROGRAMA[]
-
-    reporteId         Int
-    reporte           REPORTE @relation(fields: [reporteId], references: [idREPORTE])
-}
-
-
-
-model PROGRAMA {
-  idPROGRAMA          Int      @id @default(autoincrement())
-  nombre              String @db.VarChar(50)
-  descripcion         String  @db.VarChar(500)
-
-    categoriaId       Int
-    categoria         CATEGORIA @relation(fields: [categoriaId], references: [idCATEGORIA])
-
-    ambienteId        Int     @unique
-    ambiente          AMBIENTE @relation(fields: [ambienteId], references: [idAMBIENTE])
-
-    areaId            Int
-    area              AREA   @relation(fields: [areaId], references: [idAREA])
-  
-}
-
-
-
-model CATEGORIA {
-  idCATEGORIA         Int     @id @default(autoincrement())
-  descripcion         String  @db.VarChar(500)
-  nombre              String  @db.VarChar(50)
-
-    redesid           Int
-    redes             REDES   @relation(fields: [redesid], references: [idREDES])
-
-    programas         PROGRAMA[]
-}
-
-
-
-model REDES {
-  idREDES             Int          @id @default(autoincrement())
-  descripcion         String       @db.VarChar(500)
-
-    categorias        CATEGORIA[]
-}
-
-
-
-model AMBIENTE {
-  idAMBIENTE          Int     @id @default(autoincrement())
-  descripcion         String  @db.VarChar(500)
-  caracteristicas     String @db.VarChar(500)
-
-    programa          PROGRAMA[]
-
-    centroId          Int
-    centro            CENTRO @relation(fields: [centroId], references: [idCENTRO])
-}
-
-
-
-model CENTRO {
-  idCENTRO            Int @id @default(autoincrement())
-  descripcion         String @db.VarChar(500)
-
-    ambientes         AMBIENTE[]
+    respuestas_Asp    RESPUESTAS_ASPIRANTE[]
+    recomendaciones   RECOMENDACION[]
 }
 
 
@@ -151,6 +134,7 @@ model PREGUNTAS {
     test              TEST    @relation(fields: [testId], references: [idTEST])
 
     respuestas        RESPUESTAS[]
+    respuestas_Asp    RESPUESTAS_ASPIRANTE[]
 }
 
 
@@ -161,4 +145,27 @@ model RESPUESTAS {
 
     preguntaId        Int
     pregunta          PREGUNTAS @relation(fields: [preguntaId], references: [idPREGUNTAS])
+
+    respuestas_Asp    RESPUESTAS_ASPIRANTE[]
+}
+
+
+
+model RESPUESTAS_ASPIRANTE {
+  idRESPUESTASASP     Int      @id @default(autoincrement())
+
+    aspiranteId       Int
+    aspirante         ASPIRANTE @relation(fields: [aspiranteId], references: [idASPIRANTE])
+
+    testId            Int
+    test              TEST    @relation(fields: [testId], references: [idTEST])
+
+    preguntaId        Int
+    pregunta          PREGUNTAS @relation(fields: [preguntaId], references: [idPREGUNTAS])
+
+    respuestaId       Int
+    respuesta         RESPUESTAS @relation(fields: [respuestaId], references: [idRESPUESTAS])
+
+    reporteId         Int
+    reporte           REPORTE @relation(fields: [reporteId], references: [idREPORTE])
 }
