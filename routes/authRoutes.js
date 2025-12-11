@@ -13,4 +13,6 @@ router.get('/perfil', verificarToken, async (req , res) => {
     })
 })
 
+router.post('/registroadmin', authController.registeradmin)
+
 module.exports = router

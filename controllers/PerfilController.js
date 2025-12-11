@@ -1,9 +1,9 @@
-const PerfilService = require('./PerfilServices');
+const PerfilService = require('../services/PerfilServices');
 
 const PerfilController = {
     async getPerfilAspirante(req, res) {
         const perfil = await PerfilService.traerPerfil();
-        res.json({ error: 'No se encontró información del aspirante' });
+        res.json(perfil);
     }
 };
 

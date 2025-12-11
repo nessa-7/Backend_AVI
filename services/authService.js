@@ -19,6 +19,25 @@ const authService = {
         return nuevoaspirante
     },
 
+    //REGISTRO ADMIN
+    
+    async registeradmin(data){
+    const {idADMIN, nombre, email, password } = data; // ❌ identificacion FUERA
+
+    const passwordEncriptado = await bcrypt.hash(password, 10);
+
+    const nuevoAdmin = await prisma.aDMIN.create({
+        data: {
+            idADMIN,
+            nombre,
+            email,
+            password: passwordEncriptado
+        }
+    });
+
+    return nuevoAdmin;
+},
+
     
     async login(data){
 

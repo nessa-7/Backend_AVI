@@ -1,8 +1,9 @@
-const programas = require('../data/programas');
+const { PrismaClient } = require("@prisma/client")
+const prisma = new PrismaClient()
 
 const ProgramasService = {
   async traerProgramas() {
-    return programas;
+    return await prisma.PROGRAMA.findMany();
   }
 };
 

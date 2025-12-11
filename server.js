@@ -3,6 +3,8 @@ const app = express()
 const authRoutes = require("../aviBack/routes/authRoutes")
 const PreguntasRoutes = require("./routes/PreguntasRouter")
 const RespuestaRoutes = require("./routes/RespuestaRouter")
+const ProgramasRoutes = require("./routes/programasRoutes")
+const PerfilRoutes = require("./routes/PerfilRoutes")
 const cors = require("cors")
 const bcrypt = require("bcryptjs")
 const { PrismaClient } = require("@prisma/client")
@@ -16,7 +18,7 @@ app.use(cors({
 }));
 
 app.use(express.json())
-app.use('/api',authRoutes,PreguntasRoutes,RespuestaRoutes)
+app.use('/api',authRoutes,PreguntasRoutes,RespuestaRoutes,ProgramasRoutes,PerfilRoutes)
 
 
 app.post("/crearadmin", async (req, res) => {

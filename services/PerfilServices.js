@@ -1,8 +1,9 @@
-const { prisma } = require('../prisma/prismaClient');
+const {PrismaClient}=require ('@prisma/client');
+const prisma=new PrismaClient();
 
 const PerfilService = {
     async traerPerfil() {
-        return await prisma.aspirante.findMany(); 
+        return await prisma.aSPIRANTE.findMany(); 
     }
 };
 
