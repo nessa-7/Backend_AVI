@@ -1,6 +1,6 @@
 const express = require("express")
 const app = express()
-const authRoutes = require("../aviBack/routes/authRoutes")
+const authRoutes = require("./routes/authRoutes")
 const PreguntasRoutes = require("./routes/PreguntasRouter")
 const RespuestaRoutes = require("./routes/RespuestaRouter")
 const ProgramasRoutes = require("./routes/programasRoutes")
@@ -14,7 +14,7 @@ const prisma = new PrismaClient()
 app.use(cors({
     origin: 'http://localhost:5173',
     methods: ['GET', 'POST', 'DELETE'],
-    allowedHeaders: ['Content-Type']
+    allowedHeaders: ['Content-Type','Authorization']
 }));
 
 app.use(express.json())
