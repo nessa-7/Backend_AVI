@@ -14,8 +14,23 @@ const authController = {
     },
 
     
-    async login(req, res){
-        const result = await authService.login(req.body)
+    async loginasp(req, res){
+        const result = await authService.loginaspirante(req.body)
+        if(!result){
+            return res.json({mensaje: "Credenciales incorrectas"})
+        }
+        else{
+            res.json({
+                mensaje: "Login exitoso",
+                token: result.token,
+                rol: result.rol,
+                usuario: result.user
+            })
+        }
+    },
+
+    async loginad(req, res){
+        const result = await authService.loginadmin(req.body)
         if(!result){
             return res.json({mensaje: "Credenciales incorrectas"})
         }

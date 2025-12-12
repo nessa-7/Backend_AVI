@@ -22,7 +22,7 @@ const authService = {
     //REGISTRO ADMIN
     
     async registeradmin(data){
-    const {idADMIN, nombre, email, password } = data; // ❌ identificacion FUERA
+    const {idADMIN, nombre, email, password } = data; 
 
     const passwordEncriptado = await bcrypt.hash(password, 10);
 
@@ -39,7 +39,7 @@ const authService = {
 },
 
     
-    async login(data){
+    async loginaspirante(data){
 
         const {id, pass} = data
 
@@ -79,8 +79,25 @@ const authService = {
         return null
     },
 
-    logout(){
+    async loginadmin(data){
+            const {id, pass} = data
 
+        //buscar admin
+        const admin = await prisma.aDMIN.findUnique({ where: {idADMIN: id}})
+
+        if (admin){
+
+            const valido = await bcrypt.compare(pass, admin.password)
+            if (!valido){
+                return null
+            }
+            const token = jwt.sign(
+                { id: admin.idADMIN, rol: "admin"},
+                "JWT_SECRET",
+                { expiresIn: "2h"}
+            )
+            return {user: admin, token, rol: "admin"}
+        }
     }
 
 }

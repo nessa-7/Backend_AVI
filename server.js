@@ -5,6 +5,9 @@ const PreguntasRoutes = require("./routes/PreguntasRouter")
 const RespuestaRoutes = require("./routes/RespuestaRouter")
 const ProgramasRoutes = require("./routes/programasRoutes")
 const PerfilRoutes = require("./routes/PerfilRoutes")
+const AspiranteRoutes = require("./routes/AspiranteRoutes")
+const AdminRoutes = require("./routes/AdminRoutes")
+
 const cors = require("cors")
 const bcrypt = require("bcryptjs")
 const { PrismaClient } = require("@prisma/client")
@@ -18,18 +21,8 @@ app.use(cors({
 }));
 
 app.use(express.json())
-app.use('/api',authRoutes,PreguntasRoutes,RespuestaRoutes,ProgramasRoutes,PerfilRoutes)
+app.use('/api',authRoutes,PreguntasRoutes,RespuestaRoutes,ProgramasRoutes,PerfilRoutes,AspiranteRoutes,AdminRoutes)
 
-
-app.post("/crearadmin", async (req, res) => {
-    
-    const {idADMIN,nombre,email,password} = req.body
-    const datoencriptado = await bcrypt.hash(password,10)
-    const nuevoadmin = await prisma.aDMIN.create({data:
-        {idADMIN: Number(idADMIN),nombre,email,password:datoencriptado}
-    })
-    res.json(nuevoadmin)
-})
 
 app.listen(4000, () => {
     console.log('Servidor ejecutando puerto 4000')
