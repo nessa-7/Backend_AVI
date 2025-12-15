@@ -43,24 +43,6 @@ const authService = {
 
         const {id, pass} = data
 
-        //buscar admin
-        const admin = await prisma.aDMIN.findUnique({ where: {idADMIN: id}})
-
-        if (admin){
-
-            const valido = await bcrypt.compare(pass, admin.password)
-            if (!valido){
-                return null
-            }
-            const token = jwt.sign(
-                { id: admin.idADMIN, rol: "admin"},
-                "JWT_SECRET",
-                { expiresIn: "2h"}
-            )
-            return {user: admin, token, rol: "admin"}
-        }
-
-
         //buscar aspirante
         const aspirante = await prisma.aSPIRANTE.findUnique({ where: { idASPIRANTE: id }})
         if (aspirante){
